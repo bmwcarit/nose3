@@ -108,7 +108,6 @@ from inspect import isfunction
 from nose.plugins.base import Plugin
 from nose.util import tolist
 
-log = logging.getLogger('nose.plugins.attrib')
 compat_24 = sys.version_info >= (2, 4)
 
 def attr(*args, **kwargs):
@@ -191,6 +190,7 @@ class AttributeSelector(Plugin):
         match.
         """
         self.attribs = []
+        self.logger = logging.getLogger('nose.plugins.attrib')
 
         # handle python eval-expression parameter
         if compat_24 and options.eval_attr:
@@ -236,8 +236,8 @@ class AttributeSelector(Plugin):
 
         self.verbose_skipped = options.verbose_skipped_attr
         if self.verbose_skipped:
-            log.setLevel(logging.DEBUG)
-            log.debug("Show skipped attr tests later ...")
+            self.logger.setLevel(logging.DEBUG)
+            self.logger.debug("Show skipped attr tests later ...")
 
     def validateAttrib(self, method, cls = None):
         """Verify whether a method has the required attributes
@@ -288,7 +288,7 @@ class AttributeSelector(Plugin):
         """
         is_valid = self.validateAttrib(function)
         if self.verbose_skipped and not is_valid:
-            log.debug("Skip the test: %s", function.__name__)
+            self.logger.debug("Skip the test: %s", function.__name__)
         return is_valid
 
     def wantMethod(self, method):
@@ -303,5 +303,5 @@ class AttributeSelector(Plugin):
                 return False
         is_valid = self.validateAttrib(method, cls)
         if self.verbose_skipped and not is_valid:
-            log.debug("Skip the test method: %s", method.__name__)
+            self.logger.debug("Skip the test method: %s", method.__name__)
         return is_valid
