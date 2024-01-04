@@ -191,6 +191,7 @@ class Config(object):
         self.configSection = 'nosetests'
         self.debug = env.get('NOSE_DEBUG')
         self.debugLog = env.get('NOSE_DEBUG_LOG')
+        self.logPropagate = bool(env.get('NOSE_LOG_PROPAGATE', False))
         self.exclude = None
         self.getTestCaseNamesCompat = False
         self.includeExe = env.get('NOSE_INCLUDE_EXE',
@@ -369,7 +370,7 @@ class Config(object):
         handler.setFormatter(format)
 
         logger = logging.getLogger('nose')
-        logger.propagate = 0
+        logger.propagate = self.logPropagate
 
         # only add our default handler if there isn't already one there
         # this avoids annoying duplicate log messages.
